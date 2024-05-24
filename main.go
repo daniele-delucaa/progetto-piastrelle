@@ -91,7 +91,9 @@ func spegni(p piano, x int, y int) {
 }
 
 func regola(p piano, r string) {
-
+	arr := strings.Split(r, " ")
+	var nuovaRegola regola_
+	nuovaRegola.risultato = arr[0]
 }
 
 func stato(p piano, x int, y int) (string, int) {
