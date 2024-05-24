@@ -17,11 +17,13 @@ type colore struct {
 
 type piano struct {
 	piastrelle map[piastrella]colore
-	//regole []
+	regole     *[]regola_
 }
 
-type regola struct {
+type regola_ struct {
+	addendi   []colore
 	risultato string
+	consumo   int
 }
 
 func main() {
