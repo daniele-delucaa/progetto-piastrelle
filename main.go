@@ -10,7 +10,6 @@ type piastrella struct {
 	x, y int
 }
 
-// prova
 type colore struct {
 	coloree   string
 	intensita int
@@ -97,10 +96,43 @@ func regola(p piano, r string) {
 	nuovaRegola.risultato = arr[0]
 }
 
-func stato(p piano, x int, y int) (string, int) {
+/*func stato(p piano, x int, y int) (string, int) {
 	piast, ok := p.piastrelle[piastrella{x, y}]
 	if ok {
-		fmt.Println(piast.intensita, piast.intensita)
+		fmt.Println(piast.coloree, piast.intensita)
 	}
 	return piast.coloree, piast.intensita
+}*/
+
+func stato(p piano, x int, y int) (string, int) {
+	var piast colore
+	var ok bool
+	if piast, ok = p.piastrelle[piastrella{x, y}]; ok {
+		fmt.Println(piast.coloree, piast.intensita)
+	}
+	return piast.coloree, piast.intensita
+}
+
+func blocco(p piano, x, y int) {
+	if _, ok := p.piastrelle[piastrella{x, y}]; !ok {
+		fmt.Println("0")
+		return
+	}
+	var intensitaTotale int
+
+}
+
+func cercaAdiacenti(p piano, piast piastrella) []piastrella {
+	var circonvicine []piastrella
+
+	// combinazioni di coordinate possibili per una piastrella adiacente a quella in input
+	arrX := []int{-1, 0, 1, 1, 1, 0, -1, -1}
+	arrY := []int{1, 1, 1, 0, -1, -1, -1, 0}
+
+	for i := 0; i < len(arrX); i++ {
+		if _, ok := p.piastrelle[piastrella{piast.x + arrX[i], piast.y + arrY[i]}]; ok {
+			circonvicine = append(circonvicine, piastrella{piast.x + arrX[i], piast.y + arrY[i]})
+		}
+	}
+	return circonvicine
 }

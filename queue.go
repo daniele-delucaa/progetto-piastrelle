@@ -1,7 +1,7 @@
 package main
 
 type queueNode struct {
-	value int
+	value piastrella
 	next  *queueNode
 }
 
@@ -11,7 +11,7 @@ type queue struct {
 	length int
 }
 
-func (q *queue) Enqueue(v int) {
+func (q *queue) Enqueue(v piastrella) {
 	newNode := &queueNode{v, nil}
 	if q.Len() == 0 {
 		q.head = newNode
@@ -23,9 +23,9 @@ func (q *queue) Enqueue(v int) {
 	q.length++
 }
 
-func (q *queue) Dequeue() (int, bool) {
+func (q *queue) Dequeue() (piastrella, bool) {
 	if q.Len() == 0 {
-		return 0, false
+		return piastrella{}, false
 	}
 	v := q.head.value
 	q.head = q.head.next
