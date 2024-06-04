@@ -10,6 +10,7 @@ type piastrella struct {
 	x, y int
 }
 
+// prova
 type colore struct {
 	coloree   string
 	intensita int
