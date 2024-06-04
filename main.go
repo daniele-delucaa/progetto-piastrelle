@@ -114,11 +114,29 @@ func stato(p piano, x int, y int) (string, int) {
 }
 
 func blocco(p piano, x, y int) {
-	if _, ok := p.piastrelle[piastrella{x, y}]; !ok {
-		fmt.Println("0")
+	var inizio colore
+	var ok bool
+	var intensitaTotale int
+	if inizio, ok = p.piastrelle[piastrella{x, y}]; !ok {
+		fmt.Println(intensitaTotale)
 		return
 	}
-	var intensitaTotale int
+
+	intensitaTotale += inizio.intensita
+	visitati := make(map[piastrella]bool)
+
+	coda := queue{}
+	coda.Enqueue(piastrella{x, y})
+
+	for coda.Len() != 0 {
+		piast, _ := coda.Dequeue()
+		visitati[piast] = true
+
+		adiacenti := cercaAdiacenti(p, piast)
+		for i := 0; i < len(adiacenti); i++ {
+
+		}
+	}
 
 }
 
