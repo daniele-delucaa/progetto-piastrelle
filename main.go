@@ -75,6 +75,8 @@ func esegui(p piano, s string) {
 			propagaBlocco(p, cX, cY)*/
 	case "r":
 		regola(p, s)
+	case "s":
+		stampa(p)
 	}
 }
 
