@@ -30,10 +30,10 @@ type regola_ struct {
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	var rules *[]regola_
-	//var punt *[]regola_ = &rules
+	var rules []regola_
+	var punt *[]regola_ = &rules
 	m := make(map[piastrella]colore)
-	p := piano{m, rules}
+	p := piano{m, punt}
 
 	for scanner.Scan() {
 		l := scanner.Text()
@@ -148,7 +148,7 @@ func stampa(p piano) {
 		for _, rule := range *p.regole {
 			fmt.Print(rule.risultato, ": ")
 			for i := 0; i < len(rule.addendi); i++ {
-				fmt.Print(rule.addendi[i].intensita, " ", rule.addendi[i].coloree)
+				fmt.Print(rule.addendi[i].intensita, " ", rule.addendi[i].coloree, " ")
 			}
 			fmt.Println()
 		}
