@@ -66,14 +66,14 @@ func esegui(p piano, s string) {
 		cX, _ := strconv.Atoi(arr[1])
 		cY, _ := strconv.Atoi(arr[2])
 		bloccoOmog(p, cX, cY)
-		/*case "p":
-			cX, _ := strconv.Atoi(arr[1])
-			cY, _ := strconv.Atoi(arr[2])
-			propaga(p, cX, cY)
-		case "P":
-			cX, _ := strconv.Atoi(arr[1])
-			cY, _ := strconv.Atoi(arr[2])
-			propagaBlocco(p, cX, cY)*/
+	case "p":
+		cX, _ := strconv.Atoi(arr[1])
+		cY, _ := strconv.Atoi(arr[2])
+		propaga(p, cX, cY)
+	/*case "P":
+	cX, _ := strconv.Atoi(arr[1])
+	cY, _ := strconv.Atoi(arr[2])
+	propagaBlocco(p, cX, cY)*/
 	case "r":
 		regola(p, s)
 	case "s":
@@ -242,7 +242,7 @@ func bloccoOmog(p piano, x, y int) {
 func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 	var circonvicine []piastrella
 
-	// genera combinazioni di coordinate possibili per una piastrella adiacente a quella in input
+	// genera combinazioni di coordinate possibili per la piastrella adiacente a quella in input
 	for i := -1; i < 2; i++ {
 		for j := -1; j < 2; j++ {
 			if _, ok := p.piastrelle[piastrella{piast.x + i, piast.y + j}]; ok {
@@ -251,4 +251,25 @@ func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 		}
 	}
 	return circonvicine
+}
+
+// serve mappa per contare quantita di piastrelle con un certo colore?
+func propaga(p piano, x, y int) {
+	var coloriAdiacenti []colore
+	quantitaColori := make(map[string]int) // mappa che conta quante piastrelle hanno un determinato colore
+	//var coloreRisultato colore
+	//piast := p.piastrelle[piastrella{x, y}]
+	adiacenti := cercaAdiacenti(p, piastrella{x, y})
+
+	for _, piastSingola := range adiacenti {
+		val := p.piastrelle[piastSingola]
+		col := val.coloree
+		quantitaColori[col]++
+		coloriAdiacenti = append(coloriAdiacenti, val)
+	}
+	for _, rule := range *p.regole {
+		for _, str := range rule.addendi {
+			arr := strings.Split(str.coloree, " ")
+		}
+	}
 }
