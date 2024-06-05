@@ -37,6 +37,7 @@ func main() {
 
 	for scanner.Scan() {
 		l := scanner.Text()
+		//fmt.Println(l)
 		esegui(p, l)
 	}
 }
@@ -78,7 +79,7 @@ func esegui(p piano, s string) {
 	case "s":
 		stampa(p)
 	case "q":
-		return
+		os.Exit(0)
 	}
 }
 
@@ -185,10 +186,10 @@ func blocco(p piano, x, y int) {
 			}
 		}
 	}
-
+	fmt.Println(intensitaTotale)
 }
 
-func cercaAdiacenti(p piano, piast piastrella) []piastrella {
+/*func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 	var circonvicine []piastrella
 
 	// combinazioni di coordinate possibili per una piastrella adiacente a quella in input
@@ -201,9 +202,9 @@ func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 		}
 	}
 	return circonvicine
-}
+}*/
 
-/*func cercaAdiacenti(p piano, piast piastrella) []piastrella {
+func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 	var circonvicine []piastrella
 
 	// genera combinazioni di coordinate possibili per una piastrella adiacente a quella in input
@@ -215,4 +216,4 @@ func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 		}
 	}
 	return circonvicine
-}*/
+}
