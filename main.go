@@ -198,3 +198,17 @@ func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 	}
 	return circonvicine
 }
+
+/*func cercaAdiacenti(p piano, piast piastrella) []piastrella {
+	var circonvicine []piastrella
+
+	// genera combinazioni di coordinate possibili per una piastrella adiacente a quella in input
+	for i := -1; i < 2; i++ {
+		for j := -1; j < 2; j++ {
+			if _, ok := p.piastrelle[piastrella{piast.x + i, piast.y + j}]; ok {
+				circonvicine = append(circonvicine, piastrella{piast.x + i, piast.y + j})
+			}
+		}
+	}
+	return circonvicine
+}*/
