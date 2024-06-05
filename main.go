@@ -74,7 +74,7 @@ func esegui(p piano, s string) {
 			cY, _ := strconv.Atoi(arr[2])
 			propagaBlocco(p, cX, cY)*/
 	case "r":
-		regola(p)
+		regola(p, s)
 	}
 }
 
@@ -107,6 +107,17 @@ func regola(p piano, r string) {
 	arr := strings.Split(r, " ")
 	var nuovaRegola regola_
 	nuovaRegola.risultato = arr[1]
+	addendo := colore{}
+
+	for i := 2; i < len(arr); i++ {
+		if i%2 == 0 {
+			addendo.intensita, _ = strconv.Atoi(arr[i])
+		} else {
+			addendo.coloree = arr[i]
+			nuovaRegola.addendi = append(nuovaRegola.addendi, addendo)
+		}
+	}
+	*p.regole = append(*p.regole, nuovaRegola)
 }
 
 /*func stato(p piano, x int, y int) (string, int) {
@@ -124,6 +135,20 @@ func stato(p piano, x int, y int) (string, int) {
 		fmt.Println(piast.coloree, piast.intensita)
 	}
 	return piast.coloree, piast.intensita
+}
+
+func stampa(p piano) {
+	if len(*(p).regole) > 0 {
+		fmt.Println("(")
+		for _, rule := range *p.regole {
+			fmt.Print(rule.risultato, ": ")
+			for i := 0; i < len(rule.addendi); i++ {
+				fmt.Print(rule.addendi[i].intensita, " ", rule.addendi[i].coloree)
+			}
+			fmt.Println()
+		}
+		fmt.Println(")")
+	}
 }
 
 func blocco(p piano, x, y int) {
