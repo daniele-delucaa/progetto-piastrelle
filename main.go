@@ -62,11 +62,11 @@ func esegui(p piano, s string) {
 		cX, _ := strconv.Atoi(arr[1])
 		cY, _ := strconv.Atoi(arr[2])
 		blocco(p, cX, cY)
-		/*case "B":
-			cX, _ := strconv.Atoi(arr[1])
-			cY, _ := strconv.Atoi(arr[2])
-			bloccoOmog(p, cX, cY)
-		case "p":
+	case "B":
+		cX, _ := strconv.Atoi(arr[1])
+		cY, _ := strconv.Atoi(arr[2])
+		bloccoOmog(p, cX, cY)
+		/*case "p":
 			cX, _ := strconv.Atoi(arr[1])
 			cY, _ := strconv.Atoi(arr[2])
 			propaga(p, cX, cY)
@@ -183,6 +183,41 @@ func blocco(p piano, x, y int) {
 				intensitaTotale += val.intensita
 				visitati[adiacenti[i]] = true
 				coda.Enqueue(adiacenti[i])
+			}
+		}
+	}
+	fmt.Println(intensitaTotale)
+}
+
+func bloccoOmog(p piano, x, y int) {
+	var inizio colore
+	var ok bool
+	var intensitaTotale int
+	if inizio, ok = p.piastrelle[piastrella{x, y}]; !ok {
+		fmt.Println(intensitaTotale)
+		return
+	}
+
+	intensitaTotale += inizio.intensita
+	visitati := make(map[piastrella]bool)
+
+	coda := queue{}
+	coda.Enqueue(piastrella{x, y})
+
+	visitati[piastrella{x, y}] = true
+	for coda.Len() != 0 {
+		piast, _ := coda.Dequeue()
+
+		adiacenti := cercaAdiacenti(p, piast)
+
+		for i := 0; i < len(adiacenti); i++ {
+			if _, ok := visitati[adiacenti[i]]; !ok {
+				val := p.piastrelle[adiacenti[i]]
+				if val.coloree == inizio.coloree {
+					intensitaTotale += val.intensita
+					visitati[adiacenti[i]] = true
+					coda.Enqueue(adiacenti[i])
+				}
 			}
 		}
 	}
