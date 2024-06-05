@@ -77,6 +77,8 @@ func esegui(p piano, s string) {
 		regola(p, s)
 	case "s":
 		stampa(p)
+	case "q":
+		return
 	}
 }
 
