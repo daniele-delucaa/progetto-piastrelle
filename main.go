@@ -50,18 +50,18 @@ func esegui(p piano, s string) {
 		cX, _ := strconv.Atoi(arr[1])
 		cY, _ := strconv.Atoi(arr[2])
 		blocco(p, cX, cY)
-	case "B":
-		cX, _ := strconv.Atoi(arr[1])
-		cY, _ := strconv.Atoi(arr[2])
-		bloccoOmog(p, cX, cY)
-	case "p":
-		cX, _ := strconv.Atoi(arr[1])
-		cY, _ := strconv.Atoi(arr[2])
-		propaga(p, cX, cY)
-	case "P":
-		cX, _ := strconv.Atoi(arr[1])
-		cY, _ := strconv.Atoi(arr[2])
-		propagaBlocco(p, cX, cY)
+		/*case "B":
+			cX, _ := strconv.Atoi(arr[1])
+			cY, _ := strconv.Atoi(arr[2])
+			bloccoOmog(p, cX, cY)
+		case "p":
+			cX, _ := strconv.Atoi(arr[1])
+			cY, _ := strconv.Atoi(arr[2])
+			propaga(p, cX, cY)
+		case "P":
+			cX, _ := strconv.Atoi(arr[1])
+			cY, _ := strconv.Atoi(arr[2])
+			propagaBlocco(p, cX, cY)*/
 	}
 }
 
@@ -133,8 +133,14 @@ func blocco(p piano, x, y int) {
 		visitati[piast] = true
 
 		adiacenti := cercaAdiacenti(p, piast)
-		for i := 0; i < len(adiacenti); i++ {
 
+		for i := 0; i < len(adiacenti); i++ {
+			if _, ok := visitati[adiacenti[i]]; !ok {
+				visitati[adiacenti[i]] = true
+				val := p.piastrelle[adiacenti[i]]
+				intensitaTotale += val.intensita
+				coda.Enqueue(adiacenti[i])
+			}
 		}
 	}
 
