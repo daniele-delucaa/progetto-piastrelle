@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -27,7 +29,16 @@ type regola_ struct {
 }
 
 func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	var rules *[]regola_
+	//var punt *[]regola_ = &rules
+	m := make(map[piastrella]colore)
+	p := piano{m, rules}
 
+	for scanner.Scan() {
+		l := scanner.Text()
+		esegui(p, l)
+	}
 }
 
 func esegui(p piano, s string) {
@@ -62,6 +73,8 @@ func esegui(p piano, s string) {
 			cX, _ := strconv.Atoi(arr[1])
 			cY, _ := strconv.Atoi(arr[2])
 			propagaBlocco(p, cX, cY)*/
+	case "r":
+		regola(p)
 	}
 }
 
@@ -93,7 +106,7 @@ func spegni(p piano, x int, y int) {
 func regola(p piano, r string) {
 	arr := strings.Split(r, " ")
 	var nuovaRegola regola_
-	nuovaRegola.risultato = arr[0]
+	nuovaRegola.risultato = arr[1]
 }
 
 /*func stato(p piano, x int, y int) (string, int) {
@@ -128,17 +141,17 @@ func blocco(p piano, x, y int) {
 	coda := queue{}
 	coda.Enqueue(piastrella{x, y})
 
+	visitati[piastrella{x, y}] = true
 	for coda.Len() != 0 {
 		piast, _ := coda.Dequeue()
-		visitati[piast] = true
 
 		adiacenti := cercaAdiacenti(p, piast)
 
 		for i := 0; i < len(adiacenti); i++ {
 			if _, ok := visitati[adiacenti[i]]; !ok {
-				visitati[adiacenti[i]] = true
 				val := p.piastrelle[adiacenti[i]]
 				intensitaTotale += val.intensita
+				visitati[adiacenti[i]] = true
 				coda.Enqueue(adiacenti[i])
 			}
 		}
