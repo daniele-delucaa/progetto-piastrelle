@@ -282,10 +282,12 @@ func propagaBlocco(p piano, x, y int) {
 
 	for i := range slc {
 		coloriRisultati = propagaGenerico(p, slc[i].x, slc[i].y)
-		modifiche = append(modifiche, coloriRisultati)
+		if len(coloriRisultati) > 0 {
+			modifiche = append(modifiche, coloriRisultati)
+		}
 	}
 
-	for i := 0; i < len(modifiche); i++ {
+	for i := range modifiche {
 		coloraPiastrelle(p, modifiche[i])
 	}
 	// fmt.Println(slc)
