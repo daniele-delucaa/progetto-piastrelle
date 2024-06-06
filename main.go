@@ -253,23 +253,54 @@ func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 	return circonvicine
 }
 
-// serve mappa per contare quantita di piastrelle con un certo colore?
 func propaga(p piano, x, y int) {
-	var coloriAdiacenti []colore
-	quantitaColori := make(map[string]int) // mappa che conta quante piastrelle hanno un determinato colore
-	//var coloreRisultato colore
+	colori := propagaGenerico(p, x, y)
+	coloraPiastrelle(p, colori)
+}
+
+// serve mappa per contare quantita di piastrelle con un certo colore?
+func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
+	quantitaColori := make(map[string]int) // mappa che conta i colori delle piastrelle adiacenti a quella in input
+	coloriRisultati := make(map[piastrella]regola_)
 	//piast := p.piastrelle[piastrella{x, y}]
+	var flag bool
 	adiacenti := cercaAdiacenti(p, piastrella{x, y})
 
 	for _, piastSingola := range adiacenti {
 		val := p.piastrelle[piastSingola]
 		col := val.coloree
 		quantitaColori[col]++
-		coloriAdiacenti = append(coloriAdiacenti, val)
 	}
 	for _, rule := range *p.regole {
 		for _, str := range rule.addendi {
 			arr := strings.Split(str.coloree, " ")
+			// v = quantita sulla regola
+			v := str.intensita
+			// c = quantita sulla mappa
+			if c, ok := quantitaColori[arr[0]]; ok && c >= v {
+				flag = true
+			} else {
+				flag = false
+				break
+			}
+		}
+		if flag == true {
+			coloriRisultati[piastrella{x, y}] = rule
+			rule.consumo++
 		}
 	}
+	return coloriRisultati
+}
+
+func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
+	var coloreRisultato string
+	for k, c := range p.piastrelle {
+		for piast, _ := range coloriRisultati {
+			if piast == k {
+				coloreRisultato = coloriRisultati[piast].risultato
+				colora(p, piast.x, piast.y, coloreRisultato, c.intensita)
+			}
+		}
+	}
+	fmt.Println(coloriRisultati, coloreRisultato)
 }
