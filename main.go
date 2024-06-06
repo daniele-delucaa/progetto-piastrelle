@@ -293,7 +293,7 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 	return coloriRisultati
 }
 
-func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
+/*func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 	var coloreRisultato string
 	for k, c := range p.piastrelle {
 		for piast, _ := range coloriRisultati {
@@ -301,6 +301,20 @@ func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 				coloreRisultato = coloriRisultati[piast].risultato
 				colora(p, piast.x, piast.y, coloreRisultato, c.intensita)
 			}
+		}
+	}
+}*/
+
+func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
+	var coloreRisultato string
+	for piast, _ := range coloriRisultati {
+		_, ok := p.piastrelle[piast]
+		coloreRisultato = coloriRisultati[piast].risultato
+		cc := p.piastrelle[piast].intensita
+		if ok {
+			colora(p, piast.x, piast.y, coloreRisultato, cc)
+		} else {
+			colora(p, piast.x, piast.y, coloreRisultato, 1)
 		}
 	}
 }
