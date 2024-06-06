@@ -125,9 +125,9 @@ func stampa(p piano) {
 	if len(*(p).regole) > 0 {
 		fmt.Println("(")
 		for _, rule := range *p.regole {
-			fmt.Print(rule.risultato, ": ")
+			fmt.Print(rule.risultato, ":")
 			for i := 0; i < len(rule.addendi); i++ {
-				fmt.Print(rule.addendi[i].intensita, " ", rule.addendi[i].coloree, " ")
+				fmt.Print(" ", rule.addendi[i].intensita, " ", rule.addendi[i].coloree)
 			}
 			fmt.Println()
 		}
