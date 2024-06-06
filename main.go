@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -277,12 +278,15 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 func propagaBlocco(p piano, x, y int) {
 	_, slc := blocco(p, x, y)
 	coloriRisultati := make(map[piastrella]regola_)
+	var modifiche []map[piastrella]regola_
 
 	for i := range slc {
 		coloriRisultati = propagaGenerico(p, slc[i].x, slc[i].y)
-		if len(coloriRisultati) > 0 {
-			coloraPiastrelle(p, coloriRisultati)
-		}
+		modifiche = append(modifiche, coloriRisultati)
+	}
+
+	for i := 0; i < len(modifiche); i++ {
+		coloraPiastrelle(p, modifiche[i])
 	}
 	// fmt.Println(slc)
 }
@@ -299,4 +303,12 @@ func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 			colora(p, piast.x, piast.y, coloreRisultato, 1)
 		}
 	}
+}
+
+func ordina(p piano) {
+	regole := *p.regole
+
+	slices.SortStableFunc(regole, func(a, b regola_) int {
+		return a.consumo - b.consumo
+	})
 }
