@@ -287,6 +287,7 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 		if flag == true {
 			coloriRisultati[piastrella{x, y}] = rule
 			rule.consumo++
+			break
 		}
 	}
 	return coloriRisultati
@@ -302,5 +303,4 @@ func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 			}
 		}
 	}
-	fmt.Println(coloriRisultati, coloreRisultato)
 }
