@@ -84,21 +84,6 @@ func esegui(p piano, s string) {
 	}
 }
 
-/*func gestioneInput(arr []string) (int, int, string, int) {
-	if len(arr) == 1 {
-		return 0, 0, "", 0
-	}
-	if len(arr) < 4 {
-		cX, _ := strconv.Atoi(arr[1])
-		cY, _ := strconv.Atoi(arr[2])
-		return cX, cY, "", 0
-	}
-	cX, _ := strconv.Atoi(arr[1])
-	cY, _ := strconv.Atoi(arr[2])
-	intensity, _ := strconv.Atoi(arr[4])
-	return cX, cY, arr[3], intensity
-}*/
-
 func colora(p piano, x int, y int, alpha string, i int) {
 	var piast piastrella = piastrella{x, y}
 	p.piastrelle[piast] = colore{alpha, i}
@@ -126,14 +111,6 @@ func regola(p piano, r string) {
 	*p.regole = append(*p.regole, nuovaRegola)
 }
 
-/*func stato(p piano, x int, y int) (string, int) {
-	piast, ok := p.piastrelle[piastrella{x, y}]
-	if ok {
-		fmt.Println(piast.coloree, piast.intensita)
-	}
-	return piast.coloree, piast.intensita
-}*/
-
 func stato(p piano, x int, y int) (string, int) {
 	var piast colore
 	var ok bool
@@ -157,14 +134,13 @@ func stampa(p piano) {
 	}
 }
 
-// serve restituire la slice di piastrelle per poi usarla per propagaBlocco
+// serve restituire la slice di piastrelle (slice che contiene le piastrelle di un blocco) per poi usarla per propagaBlocco
 func blocco(p piano, x, y int) (int, []piastrella) {
 	var inizio colore
 	var ok bool
 	var intensitaTotale int
 	var sliceBlocco []piastrella
 	if inizio, ok = p.piastrelle[piastrella{x, y}]; !ok {
-		fmt.Println(intensitaTotale)
 		return 0, nil
 	}
 
@@ -300,6 +276,15 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 
 func propagaBlocco(p piano, x, y int) {
 	_, slc := blocco(p, x, y)
+	coloriRisultati := make(map[piastrella]regola_)
+
+	for i := range slc {
+		coloriRisultati = propagaGenerico(p, slc[i].x, slc[i].y)
+		if len(coloriRisultati) > 0 {
+			coloraPiastrelle(p, coloriRisultati)
+		}
+	}
+	// fmt.Println(slc)
 }
 
 func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
