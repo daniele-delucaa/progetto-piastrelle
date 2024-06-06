@@ -61,7 +61,8 @@ func esegui(p piano, s string) {
 	case "b":
 		cX, _ := strconv.Atoi(arr[1])
 		cY, _ := strconv.Atoi(arr[2])
-		blocco(p, cX, cY)
+		val, _ := blocco(p, cX, cY)
+		fmt.Println(val)
 	case "B":
 		cX, _ := strconv.Atoi(arr[1])
 		cY, _ := strconv.Atoi(arr[2])
@@ -70,10 +71,10 @@ func esegui(p piano, s string) {
 		cX, _ := strconv.Atoi(arr[1])
 		cY, _ := strconv.Atoi(arr[2])
 		propaga(p, cX, cY)
-	/*case "P":
-	cX, _ := strconv.Atoi(arr[1])
-	cY, _ := strconv.Atoi(arr[2])
-	propagaBlocco(p, cX, cY)*/
+	case "P":
+		cX, _ := strconv.Atoi(arr[1])
+		cY, _ := strconv.Atoi(arr[2])
+		propagaBlocco(p, cX, cY)
 	case "r":
 		regola(p, s)
 	case "s":
@@ -156,18 +157,21 @@ func stampa(p piano) {
 	}
 }
 
-func blocco(p piano, x, y int) {
+// serve restituire la slice di piastrelle per poi usarla per propagaBlocco
+func blocco(p piano, x, y int) (int, []piastrella) {
 	var inizio colore
 	var ok bool
 	var intensitaTotale int
+	var sliceBlocco []piastrella
 	if inizio, ok = p.piastrelle[piastrella{x, y}]; !ok {
 		fmt.Println(intensitaTotale)
-		return
+		return 0, nil
 	}
 
 	intensitaTotale += inizio.intensita
 	visitati := make(map[piastrella]bool)
 
+	sliceBlocco = append(sliceBlocco, piastrella{x, y})
 	coda := queue{}
 	coda.Enqueue(piastrella{x, y})
 
@@ -181,12 +185,13 @@ func blocco(p piano, x, y int) {
 			if _, ok := visitati[adiacenti[i]]; !ok {
 				val := p.piastrelle[adiacenti[i]]
 				intensitaTotale += val.intensita
+				sliceBlocco = append(sliceBlocco, adiacenti[i])
 				visitati[adiacenti[i]] = true
 				coda.Enqueue(adiacenti[i])
 			}
 		}
 	}
-	fmt.Println(intensitaTotale)
+	return intensitaTotale, sliceBlocco
 }
 
 func bloccoOmog(p piano, x, y int) {
@@ -293,17 +298,9 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 	return coloriRisultati
 }
 
-/*func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
-	var coloreRisultato string
-	for k, c := range p.piastrelle {
-		for piast, _ := range coloriRisultati {
-			if piast == k {
-				coloreRisultato = coloriRisultati[piast].risultato
-				colora(p, piast.x, piast.y, coloreRisultato, c.intensita)
-			}
-		}
-	}
-}*/
+func propagaBlocco(p piano, x, y int) {
+	_, slc := blocco(p, x, y)
+}
 
 func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 	var coloreRisultato string
