@@ -100,7 +100,7 @@ func regola(p piano, r string) {
 	arr := strings.Split(r, " ")
 	var nuovaRegola regola_
 	nuovaRegola.risultato = arr[1]
-	addendo := colore{}
+	var addendo colore
 
 	for i := 2; i < len(arr); i++ {
 		if i%2 == 0 {
@@ -228,9 +228,9 @@ func propaga(p piano, x, y int) {
 	coloraPiastrelle(p, colori)
 }
 
-// serve mappa per contare quantita di piastrelle con un certo colore?
 func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
-	quantitaColori := make(map[string]int) // mappa che conta i colori delle piastrelle adiacenti a quella in input
+	// mappa che conta i colori delle piastrelle adiacenti a quella in input
+	quantitaColori := make(map[string]int)
 	coloriRisultati := make(map[piastrella]regola_)
 	var flag bool
 	var i int
