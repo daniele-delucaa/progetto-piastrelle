@@ -36,3 +36,13 @@ func (q *queue) Dequeue() (piastrella, bool) {
 func (q *queue) Len() int {
 	return q.length
 }
+
+func (q *queue) isEmpty() bool {
+	return q.head == nil
+}
+
+/*
+func (q *queue) isEmpty() bool {
+	return q.head == nil
+}
+*/

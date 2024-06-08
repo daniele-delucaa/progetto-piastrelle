@@ -80,19 +80,23 @@ func esegui(p piano, s string) {
 		regola(p, s)
 	case "s":
 		stampa(p)
+	case "o":
+		ordina(p)
 	case "q":
 		os.Exit(0)
+	default:
+		return
 	}
 }
 
 func colora(p piano, x int, y int, alpha string, i int) {
-	var piast piastrella = piastrella{x, y}
-	p.piastrelle[piast] = colore{alpha, i}
+	//var piast piastrella = piastrella{x, y}
+	p.piastrelle[piastrella{x, y}] = colore{alpha, i}
 }
 
 func spegni(p piano, x int, y int) {
-	var piast piastrella = piastrella{x, y}
-	delete(p.piastrelle, piast)
+	//var piast piastrella = piastrella{x, y}
+	delete(p.piastrelle, piastrella{x, y})
 }
 
 func regola(p piano, r string) {
@@ -135,6 +139,21 @@ func stampa(p piano) {
 	}
 }
 
+func cercaAdiacenti(p piano, piast piastrella) []piastrella {
+	var circonvicine []piastrella
+
+	// combinazioni di coordinate possibili per una piastrella adiacente a quella in input
+	arrX := []int{-1, 0, 1, 1, 1, 0, -1, -1}
+	arrY := []int{1, 1, 1, 0, -1, -1, -1, 0}
+
+	for i := 0; i < len(arrX); i++ {
+		if _, ok := p.piastrelle[piastrella{piast.x + arrX[i], piast.y + arrY[i]}]; ok {
+			circonvicine = append(circonvicine, piastrella{piast.x + arrX[i], piast.y + arrY[i]})
+		}
+	}
+	return circonvicine
+}
+
 // serve restituire la slice di piastrelle (slice che contiene le piastrelle di un blocco) per poi usarla per propagaBlocco
 func blocco(p piano, x, y int) (int, []piastrella) {
 	var inizio colore
@@ -153,7 +172,7 @@ func blocco(p piano, x, y int) (int, []piastrella) {
 	coda.Enqueue(piastrella{x, y})
 
 	visitati[piastrella{x, y}] = true
-	for coda.Len() != 0 {
+	for !coda.isEmpty() {
 		piast, _ := coda.Dequeue()
 
 		adiacenti := cercaAdiacenti(p, piast)
@@ -187,7 +206,7 @@ func bloccoOmog(p piano, x, y int) {
 	coda.Enqueue(piastrella{x, y})
 
 	visitati[piastrella{x, y}] = true
-	for coda.Len() != 0 {
+	for !coda.isEmpty() {
 		piast, _ := coda.Dequeue()
 
 		adiacenti := cercaAdiacenti(p, piast)
@@ -206,46 +225,22 @@ func bloccoOmog(p piano, x, y int) {
 	fmt.Println(intensitaTotale)
 }
 
-/*func cercaAdiacenti(p piano, piast piastrella) []piastrella {
-	var circonvicine []piastrella
-
-	// combinazioni di coordinate possibili per una piastrella adiacente a quella in input
-	arrX := []int{-1, 0, 1, 1, 1, 0, -1, -1}
-	arrY := []int{1, 1, 1, 0, -1, -1, -1, 0}
-
-	for i := 0; i < len(arrX); i++ {
-		if _, ok := p.piastrelle[piastrella{piast.x + arrX[i], piast.y + arrY[i]}]; ok {
-			circonvicine = append(circonvicine, piastrella{piast.x + arrX[i], piast.y + arrY[i]})
-		}
-	}
-	return circonvicine
-}*/
-
-func cercaAdiacenti(p piano, piast piastrella) []piastrella {
-	var circonvicine []piastrella
-
-	// genera combinazioni di coordinate possibili per la piastrella adiacente a quella in input
-	for i := -1; i < 2; i++ {
-		for j := -1; j < 2; j++ {
-			if _, ok := p.piastrelle[piastrella{piast.x + i, piast.y + j}]; ok {
-				circonvicine = append(circonvicine, piastrella{piast.x + i, piast.y + j})
-			}
-		}
-	}
-	return circonvicine
-}
-
 func propaga(p piano, x, y int) {
 	colori := propagaGenerico(p, x, y)
 	coloraPiastrelle(p, colori)
 }
 
 // serve mappa per contare quantita di piastrelle con un certo colore?
+
 func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 	quantitaColori := make(map[string]int) // mappa che conta i colori delle piastrelle adiacenti a quella in input
 	coloriRisultati := make(map[piastrella]regola_)
 	//piast := p.piastrelle[piastrella{x, y}]
-	var flag bool
+	//var flag bool
+	//regole := (*p.regole)
+	var i int
+	var rule regola_
+	var lenRegola int
 	adiacenti := cercaAdiacenti(p, piastrella{x, y})
 
 	for _, piastSingola := range adiacenti {
@@ -253,51 +248,64 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 		col := val.coloree
 		quantitaColori[col]++
 	}
-	for _, rule := range *p.regole {
+	for i, rule = range *p.regole {
 		for _, str := range rule.addendi {
 			arr := strings.Split(str.coloree, " ")
 			// v = quantita sulla regola
 			v := str.intensita
 			// c = quantita sulla mappa
 			if c, ok := quantitaColori[arr[0]]; ok && c >= v {
-				flag = true
+				//flag = true
+				lenRegola++
 			} else {
-				flag = false
+				//flag = false
+				lenRegola = 0
 				break
 			}
 		}
-		if flag == true {
+		if lenRegola == len(rule.addendi) {
 			coloriRisultati[piastrella{x, y}] = rule
-			rule.consumo++
+
+			(*p.regole)[i].consumo++
+			//rule.consumo++
+			lenRegola = 0
+			//flag = true
+			//flag = false
 			break
 		}
+
 	}
+	//fmt.Println(coloriRisultati)
 	return coloriRisultati
 }
 
 func propagaBlocco(p piano, x, y int) {
 	_, slc := blocco(p, x, y)
-	coloriRisultati := make(map[piastrella]regola_)
+	colori := make(map[piastrella]regola_)
+	// slice di modifiche da applicare a ogni piastrella
 	var modifiche []map[piastrella]regola_
 
 	for i := range slc {
-		coloriRisultati = propagaGenerico(p, slc[i].x, slc[i].y)
-		if len(coloriRisultati) > 0 {
-			modifiche = append(modifiche, coloriRisultati)
+		colori = propagaGenerico(p, slc[i].x, slc[i].y)
+
+		if len(colori) > 0 {
+			modifiche = append(modifiche, colori)
+			//fmt.Println(colori)
 		}
 	}
 
 	for i := range modifiche {
 		coloraPiastrelle(p, modifiche[i])
 	}
-	// fmt.Println(slc)
+	// fmt.Println(colori)
+	// fmt.Println(modifiche)
 }
 
 func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
-	var coloreRisultato string
-	for piast, _ := range coloriRisultati {
+	//var coloreRisultato string
+	for piast := range coloriRisultati {
 		_, ok := p.piastrelle[piast]
-		coloreRisultato = coloriRisultati[piast].risultato
+		coloreRisultato := coloriRisultati[piast].risultato
 		cc := p.piastrelle[piast].intensita
 		if ok {
 			colora(p, piast.x, piast.y, coloreRisultato, cc)
@@ -308,9 +316,12 @@ func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 }
 
 func ordina(p piano) {
-	regole := *p.regole
-
-	slices.SortStableFunc(regole, func(a, b regola_) int {
+	//regole := *p.regole
+	/*for _, rule := range *p.regole {
+		fmt.Println(rule, rule.consumo, " fffffffff")
+	}*/
+	slices.SortStableFunc(*p.regole, func(a, b regola_) int {
 		return a.consumo - b.consumo
 	})
+
 }
