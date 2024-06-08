@@ -38,7 +38,6 @@ func main() {
 
 	for scanner.Scan() {
 		l := scanner.Text()
-		//fmt.Println(l)
 		esegui(p, l)
 	}
 }
@@ -90,12 +89,10 @@ func esegui(p piano, s string) {
 }
 
 func colora(p piano, x int, y int, alpha string, i int) {
-	//var piast piastrella = piastrella{x, y}
 	p.piastrelle[piastrella{x, y}] = colore{alpha, i}
 }
 
 func spegni(p piano, x int, y int) {
-	//var piast piastrella = piastrella{x, y}
 	delete(p.piastrelle, piastrella{x, y})
 }
 
@@ -141,14 +138,15 @@ func stampa(p piano) {
 
 func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 	var circonvicine []piastrella
-
-	// combinazioni di coordinate possibili per una piastrella adiacente a quella in input
-	arrX := []int{-1, 0, 1, 1, 1, 0, -1, -1}
-	arrY := []int{1, 1, 1, 0, -1, -1, -1, 0}
-
-	for i := 0; i < len(arrX); i++ {
-		if _, ok := p.piastrelle[piastrella{piast.x + arrX[i], piast.y + arrY[i]}]; ok {
-			circonvicine = append(circonvicine, piastrella{piast.x + arrX[i], piast.y + arrY[i]})
+	// genera combinazioni di coordinate possibili per la piastrella adiacente a quella in input
+	for i := -1; i <= 1; i++ {
+		for j := -1; j <= 1; j++ {
+			// esclude la piastrella in input (i == 0 e j == 0)
+			if i != 0 || j != 0 {
+				if _, ok := p.piastrelle[piastrella{piast.x + i, piast.y + j}]; ok {
+					circonvicine = append(circonvicine, piastrella{piast.x + i, piast.y + j})
+				}
+			}
 		}
 	}
 	return circonvicine
@@ -231,16 +229,12 @@ func propaga(p piano, x, y int) {
 }
 
 // serve mappa per contare quantita di piastrelle con un certo colore?
-
 func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 	quantitaColori := make(map[string]int) // mappa che conta i colori delle piastrelle adiacenti a quella in input
 	coloriRisultati := make(map[piastrella]regola_)
-	//piast := p.piastrelle[piastrella{x, y}]
-	//var flag bool
-	//regole := (*p.regole)
+	var flag bool
 	var i int
 	var rule regola_
-	var lenRegola int
 	adiacenti := cercaAdiacenti(p, piastrella{x, y})
 
 	for _, piastSingola := range adiacenti {
@@ -255,60 +249,48 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 			v := str.intensita
 			// c = quantita sulla mappa
 			if c, ok := quantitaColori[arr[0]]; ok && c >= v {
-				//flag = true
-				lenRegola++
+				flag = true
 			} else {
-				//flag = false
-				lenRegola = 0
+				flag = false
 				break
 			}
 		}
-		if lenRegola == len(rule.addendi) {
+		if flag {
 			coloriRisultati[piastrella{x, y}] = rule
-
 			(*p.regole)[i].consumo++
-			//rule.consumo++
-			lenRegola = 0
-			//flag = true
-			//flag = false
+			flag = false
 			break
 		}
-
 	}
-	//fmt.Println(coloriRisultati)
 	return coloriRisultati
 }
 
 func propagaBlocco(p piano, x, y int) {
 	_, slc := blocco(p, x, y)
 	colori := make(map[piastrella]regola_)
+
 	// slice di modifiche da applicare a ogni piastrella
 	var modifiche []map[piastrella]regola_
 
 	for i := range slc {
 		colori = propagaGenerico(p, slc[i].x, slc[i].y)
-
 		if len(colori) > 0 {
 			modifiche = append(modifiche, colori)
-			//fmt.Println(colori)
 		}
 	}
 
 	for i := range modifiche {
 		coloraPiastrelle(p, modifiche[i])
 	}
-	// fmt.Println(colori)
-	// fmt.Println(modifiche)
 }
 
 func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
-	//var coloreRisultato string
 	for piast := range coloriRisultati {
 		_, ok := p.piastrelle[piast]
 		coloreRisultato := coloriRisultati[piast].risultato
-		cc := p.piastrelle[piast].intensita
+		intensitaPiastrella := p.piastrelle[piast].intensita
 		if ok {
-			colora(p, piast.x, piast.y, coloreRisultato, cc)
+			colora(p, piast.x, piast.y, coloreRisultato, intensitaPiastrella)
 		} else {
 			colora(p, piast.x, piast.y, coloreRisultato, 1)
 		}
@@ -316,12 +298,7 @@ func coloraPiastrelle(p piano, coloriRisultati map[piastrella]regola_) {
 }
 
 func ordina(p piano) {
-	//regole := *p.regole
-	/*for _, rule := range *p.regole {
-		fmt.Println(rule, rule.consumo, " fffffffff")
-	}*/
 	slices.SortStableFunc(*p.regole, func(a, b regola_) int {
 		return a.consumo - b.consumo
 	})
-
 }

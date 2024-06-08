@@ -40,9 +40,3 @@ func (q *queue) Len() int {
 func (q *queue) isEmpty() bool {
 	return q.head == nil
 }
-
-/*
-func (q *queue) isEmpty() bool {
-	return q.head == nil
-}
-*/
