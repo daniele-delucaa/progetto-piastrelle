@@ -85,4 +85,52 @@ La funzione regola permette di aggiungere una regola nel piano, ha come parametr
 Dove β è il **colore risultato** della regola, ki αi sono gli **addendi** della regola. Viene effettuata una **Split** sulla stringa, i suoi dati vengono salvati su una slice di stringhe, ignorando gli spazi. 
 Viene effettuato **parsing** della slice, e grazie a questa operazione viene creata e aggiunta la regola nella slice di regole nel **piano**.
 - **Complessità temporale**: la **Split** ha complessità **O(n)**, dove **n = numero caratteri stringa**. Abbiamo un **ciclo for** che itera sulla **slice**, che ha **k elementi**. Inoltre le restanti operazioni (assegnamenti di variabili e confronti hanno complessità costante **O(1)**). Nè risulta una complessità di **O(n) + O(k) = O(n)**, poichè **k <= n**.
-- **Complessità spaziale**: Abbiamo due **variabili** che occupano spazio costante **O(1)**. 
+- **Complessità spaziale**: Abbiamo due **variabili** che occupano spazio costante **O(1)**. La slice **addendi** cresce nell'ordine di **O(n) dove n è al max 8** dato che una regola non ha mai più di 8 addendi. L' aggiunta della regola occupa spazio costante **O(1)**. La **Split** ha complessità pari a **O(n)**.
+
+### Stato
+```Go
+func stato(p piano, x int, y int) (string, int) {
+	var piast colore
+	var ok bool
+	if piast, ok = p.piastrelle[piastrella{x, y}]; ok {
+		fmt.Println(piast.coloree, piast.intensita)
+	}
+	return piast.coloree, piast.intensita
+}
+```
+Stato prende come parametro il **piano** e le **coordinate** di una piastrella, **restituisce** e **stampa** il **colore** e l'**intensità** della piastrella in input se questa è accesa nel piano, altrimenti non verrà stampato nulla. Stato funziona correttamente grazie a un controllo di esistenza di una chiave in una mappa, in questo caso, passo alla mappa che contiene le piastrelle, le coordinate date come parametro in input e appunto nè controllo l'esistenza.
+- **Complessità temporale**: assumiamo che i confronti, gli assegnamenti di variabili e la restituzione di valori abbiano tempo costante, quindi la complessità è **O(1)**
+- **Complessità spaziale**: lo spazio utilizzato in questa funzione è nell'ordine di **O(1)**
+
+### Stampa
+```Go
+func stampa(p piano) {
+	if len(*(p).regole) > 0 {
+		fmt.Println("(")
+		for _, rule := range *p.regole {
+			fmt.Print(rule.risultato, ":")
+			for i := 0; i < len(rule.addendi); i++ {
+				fmt.Print(" ", rule.addendi[i].intensita, " ", rule.addendi[i].coloree)
+			}
+			fmt.Println()
+		}
+		fmt.Println(")")
+	}
+}
+```
+Questa funzione permette di **stampare** tutte le **regole** nel piano, nell'ordine in cui si trovano. La stampa viene effettuata nel seguente formato:
+```
+(
+r1
+r2
+..
+.
+rm
+)
+```
+La funzione prima controlla se sono presenti delle regole da stampare, in caso affermativo, viene iterata la slice di regole, e per ognuna stampa i diversi addendi, ciò viene fatto con due **cicli for** annidati. 
+- **Complessità temporale**: il primo ciclo ha complessità **O(n)** dove **n = numero regole nel piano**, il for interno effettua sempre al massimo **8 iterazioni** (perchè una regola ha al max 8 addendi), quindi ha complessità **O(k)** dove **k = 8**. 
+Abbiamo quindi **O(n) * O(k) = O(n * k)**. 
+- **Complessità spaziale**: assumiamo che i confronti, gli assegnamenti e le operazioni di stampa abbiano complessità costante di **O(1)**
+
+### Blocco
