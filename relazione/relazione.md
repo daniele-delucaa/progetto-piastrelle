@@ -208,3 +208,9 @@ type queue struct {
 - **Complessità spaziale**: abbiamo la slice **sliceBlocco**, che nel caso peggiore può contenere fino a **n** elementi, quindi ha complessità **O(n)**. La mappa **visitati[piastrelle]bool**, anch'essa nel caso peggiore deve salvare tutte le piastrelle e avere complessità **O(n)**, cosi come la coda. La complessità spaziale totale è quindi **O(n)**.
 
 ### Blocco omogeneo
+Blocco omogeneo ha un comportamento simile a **blocco**, solo che in questo caso calcola e restituisce l'**intensità** di un **blocco omogeneo di appartenenza**.
+L' implementazione della funzione è pressochè identica a blocco, con una differenza, è presente un **if** che controlla se il **colore della piastrella iniziale** è uguale al **colore della piastrella circonvicina**. Le prestazioni e la complessità non variano rispetto a blocco, quindi: 
+- **Complessità temporale**: **O(n)**
+- **Complessità spaziale**: **O(n)**
+
+### Propaga
