@@ -214,3 +214,48 @@ L' implementazione della funzione è pressochè identica a blocco, con una diffe
 - **Complessità spaziale**: **O(n)**
 
 ### Propaga
+Propaga prende come input una **piastrella** e applica la prima regola di propagazione applicabile dall'elenco delle regole, ricolorando la piastrella. Se nessuna regola è applicabile, non viene eseguita alcuna operazione.
+```Go
+func propaga(p piano, x, y int) {
+	colori := propagaGenerico(p, x, y)
+	coloraPiastrelle(p, colori)
+}
+
+func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
+	quantitaColori := make(map[string]int)
+	coloriRisultati := make(map[piastrella]regola_)
+	var flag bool
+	var i int
+	var rule regola_
+	adiacenti := cercaAdiacenti(p, piastrella{x, y})
+
+	for _, piastSingola := range adiacenti {
+		val := p.piastrelle[piastSingola]
+		col := val.coloree
+		quantitaColori[col]++
+	}
+	for i, rule = range *p.regole {
+		for _, str := range rule.addendi {
+			arr := strings.Split(str.coloree, " ")
+			v := str.intensita
+			if c, ok := quantitaColori[arr[0]]; ok && c >= v {
+				flag = true
+			} else {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			coloriRisultati[piastrella{x, y}] = rule
+			(*p.regole)[i].consumo++
+			flag = false
+			break
+		}
+	}
+	return coloriRisultati
+}
+```
+Per questa funzione usiamo due mappe, **quantitaColori[string]int** che conta i colori delle piastrelle adiacenti a quella in input, cosi da verificare se una regola di propagazione è applicabile o meno, e **coloriRisultati[piastrella]regola_** che verrà restituita come risultato della funzione, questa mappa memorizza che regola di propagazaione deve essere applicata a una certa piastrella. Per "riempire" la mappa **quantitaColori** viene usata la funzione cercaAdiacenti. 
+La funzione ha poi **due cicli for** annidati, il ciclo esterno itera sull'elenco delle regole, e quello interno itera sugli addendi delle regole per verificare se la regola è applicabile o meno (per verificare se una regola è applicabile ci aiutiamo con l'utilizzo di una **flag**). Poi se abbiamo trovato una regola, viene aumentato il consumo della regola, e questa viene salvata e restituita sotto forma di mappa. Infine viene chiamata la funzione **coloraPiastrelle** che applica la funzione **colora** e quindi colora la piastrella. 
+- **Complessità temporale**: il ciclo per popolare la mappa **quantitaColori** ha una complessità **O(1)**, dato le operazioni all'interno del ciclo hanno costo costante e che abbiamo un massimo di 8 piastrelle adiacenti. Per i **due cicli for annidati** invece, quello esterno itera su tutte le **regole**, e quello interno itera sugli **addendi** di essa, quindi supponendo che le altre operazioni hanno tempo costante, sappiamo che gli addendi per una regola sono al massimo 8, quindi abbiamo complessità **O(1)**, il ciclo esterno ha complessità **O(n)** dove **n = numero regole**, quindi la complessità totale è **O(n)**. La funzione **coloraPiastrelle** in questo caso itererà un massimo di una volta, su un'unica piastrella, quindi ha complessità **O(1)**. La **complessità temporale** di propaga è **O(n) + 0(1) = O(n)**.
+- **complessità spaziale**: la mappa **quantitaColori** conterrà al massimo 8 piastrelle, **coloriRisultati** avrà invece al massimo 1 piastrella, entrambe hanno quindi complessità **O(1)**
