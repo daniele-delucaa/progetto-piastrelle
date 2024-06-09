@@ -259,3 +259,29 @@ Per questa funzione usiamo due mappe, **quantitaColori[string]int** che conta i 
 La funzione ha poi **due cicli for** annidati, il ciclo esterno itera sull'elenco delle regole, e quello interno itera sugli addendi delle regole per verificare se la regola è applicabile o meno (per verificare se una regola è applicabile ci aiutiamo con l'utilizzo di una **flag**). Poi se abbiamo trovato una regola, viene aumentato il consumo della regola, e questa viene salvata e restituita sotto forma di mappa. Infine viene chiamata la funzione **coloraPiastrelle** che applica la funzione **colora** e quindi colora la piastrella. 
 - **Complessità temporale**: il ciclo per popolare la mappa **quantitaColori** ha una complessità **O(1)**, dato le operazioni all'interno del ciclo hanno costo costante e che abbiamo un massimo di 8 piastrelle adiacenti. Per i **due cicli for annidati** invece, quello esterno itera su tutte le **regole**, e quello interno itera sugli **addendi** di essa, quindi supponendo che le altre operazioni hanno tempo costante, sappiamo che gli addendi per una regola sono al massimo 8, quindi abbiamo complessità **O(1)**, il ciclo esterno ha complessità **O(n)** dove **n = numero regole**, quindi la complessità totale è **O(n)**. La funzione **coloraPiastrelle** in questo caso itererà un massimo di una volta, su un'unica piastrella, quindi ha complessità **O(1)**. La **complessità temporale** di propaga è **O(n) + 0(1) = O(n)**.
 - **complessità spaziale**: la mappa **quantitaColori** conterrà al massimo 8 piastrelle, **coloriRisultati** avrà invece al massimo 1 piastrella, entrambe hanno quindi complessità **O(1)**
+
+### propagaBlocco
+Questa funzione deve propagare il colore **non solo su una piastrella**, ma sull'**intero blocco di appartenenza**.
+```Go
+func propagaBlocco(p piano, x, y int) {
+	_, slc := blocco(p, x, y)
+	colori := make(map[piastrella]regola_)
+	var modifiche []map[piastrella]regola_
+
+	for i := range slc {
+		colori = propagaGenerico(p, slc[i].x, slc[i].y)
+		if len(colori) > 0 {
+			modifiche = append(modifiche, colori)
+		}
+	}
+
+	for i := range modifiche {
+		coloraPiastrelle(p, modifiche[i])
+	}
+}
+```
+Inanzitutto individuiamo le piastrelle che fanno parte del blocco usando la funzione **blocco**, che restituisce le piastrelle in una slice. Anche qui viene usata una mappa **colori[piastrella]regola_** che associa ad una piastrella la regola da utilizzare. Abbiamo poi **var modifiche []map[piastrella]regola_**, cioè una **slice di modifiche** da applicare a ogni piastrella. 
+La funzione itera sulla slice che contiene le piastrelle del blocco, e vi applica la funzione **propagaGenerico**, che vi restituisce i la regola da applicare ad una piastrella (se è presente una regola applicabile), e la aggiunge alla slice delle modifiche. 
+Infine si itera sulle slice delle modifiche e si chiama la funzione **coloraPiastrelle**.
+- **Complessità temporale**: la complessità temporale è pari a **O(P + R)** dove **P = numero piastrelle nel blocco**, **R = numero regole**
+- **Complessità spaziale**: abbiamo una slice che contiene le piastrelle nel blocco, quindi con una complessità **O(P)**, una mappa con i colori risultanti che ha complessità **O(n)** dove **n = numero colori**, quindi la complessità è **O(P + n)**.
