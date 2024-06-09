@@ -134,3 +134,77 @@ Abbiamo quindi **O(n) * O(k) = O(n * k)**.
 - **Complessità spaziale**: assumiamo che i confronti, gli assegnamenti e le operazioni di stampa abbiano complessità costante di **O(1)**
 
 ### Blocco
+```Go
+func blocco(p piano, x, y int) (int, []piastrella) {
+	var inizio colore
+	var ok bool
+	var intensitaTotale int
+	var sliceBlocco []piastrella
+	if inizio, ok = p.piastrelle[piastrella{x, y}]; !ok {
+		return 0, nil
+	}
+
+	intensitaTotale += inizio.intensita
+	visitati := make(map[piastrella]bool)
+
+	sliceBlocco = append(sliceBlocco, piastrella{x, y})
+	coda := queue{}
+	coda.Enqueue(piastrella{x, y})
+
+	visitati[piastrella{x, y}] = true
+	for !coda.isEmpty() {
+		piast, _ := coda.Dequeue()
+
+		adiacenti := cercaAdiacenti(p, piast)
+
+		for i := 0; i < len(adiacenti); i++ {
+			if _, ok := visitati[adiacenti[i]]; !ok {
+				val := p.piastrelle[adiacenti[i]]
+				intensitaTotale += val.intensita
+				sliceBlocco = append(sliceBlocco, adiacenti[i])
+				visitati[adiacenti[i]] = true
+				coda.Enqueue(adiacenti[i])
+			}
+		}
+	}
+	return intensitaTotale, sliceBlocco
+}
+```
+Blocco ha come parametri il **piano** e le **coordinate** di una piastrella. La funzione deve stampare la **somma delle intensità** del blocco di appartenenza della piastrella passata come parametro. Questa funzione restituisce l'intensità e una **slice di piastrelle** che contiene le piastrelle che fanno parte del blocco rispetto alla piastrella passata in input. Questa valore servirà più avanti per la funzione **propagaBlocco**. 
+La funzione blocco fa uso dell'algoritmo **BFS** e di una funzione **cercaAdiacenti**:
+```Go
+func cercaAdiacenti(p piano, piast piastrella) []piastrella {
+	var circonvicine []piastrella
+	// genera combinazioni di coordinate possibili per la piastrella adiacente a quella in input
+	for i := -1; i <= 1; i++ {
+		for j := -1; j <= 1; j++ {
+			// esclude la piastrella in input (i == 0 e j == 0)
+			if i != 0 || j != 0 {
+				if _, ok := p.piastrelle[piastrella{piast.x + i, piast.y + j}]; ok {
+					circonvicine = append(circonvicine, piastrella{piast.x + i, piast.y + j})
+				}
+			}
+		}
+	}
+	return circonvicine
+}
+```
+cercaAdiacenti trova le piastrelle circonvicine rispetto a una piastrella in input generando tutte le possibili combinazioni di piastrelle intorno a quella in input, infine restituisce una **slice** contenenti le piastrelle circonvicine. La funzione ha **complessità temporale**: complessità costante **O(1)**
+
+La BFS inoltre fa uso di una **coda**, notiamo l'utilizzo del campo **tail** che è utile nel metodo **Enqueue()**, dato che permette di non dover scorrere tutta la coda per aggiungere un elemento in coda, ma l'aggiunta dell'ultimo elemento viene effettuata in tempo costante. 
+```Go
+type queueNode struct {
+	value piastrella
+	next  *queueNode
+}
+
+type queue struct {
+	head   *queueNode
+	tail   *queueNode
+	length int
+}
+```
+- **Complessità temporale**: assumiamo che i confronti, assegnamenti, accessi alla mappa, aggiunute di elementi a esse, e le operazioni sulla coda, abbiano tempo costante **O(1)**. La **ricerca degli adiacenti** ha complessità **O(8)**, (infatti il massimo di piastrelle adiacenti è 8). La **BFS** ha due cicli, il primo si ferma quando la **coda** è vuota, il secondo invece itera sulle piastrelle **circonvicine** all'elemento corrente in coda. Abbiamo una complessità **O(n)** dove **n = insieme dei vertici del grafo che rappresentano le piastrelle nel blocco**.
+- **Complessità spaziale**: abbiamo la slice **sliceBlocco**, che nel caso peggiore può contenere fino a **n** elementi, quindi ha complessità **O(n)**. La mappa **visitati[piastrelle]bool**, anch'essa nel caso peggiore deve salvare tutte le piastrelle e avere complessità **O(n)**, cosi come la coda. La complessità spaziale totale è quindi **O(n)**.
+
+### Blocco omogeneo
