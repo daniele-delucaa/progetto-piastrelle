@@ -2,6 +2,13 @@ De Luca Daniele, 01576A
 
 # Relazione progetto "Piastrelle Digitali"
 
+### Compilazione edeguibile
+Per compilare il progetto bisogna usare il seguente comando
+```
+go build *.go
+```
+Una volta eseguito verrà prodotto l'eseguibile che si chiamerà "main".
+
 ## Modellazione e implementazione
 Analizzando la traccia emergono alcune considerazioni importanti: è necessaria una struttura dati adeguata e efficiente per rappresentare il piano con le piastrelle e i relativi blocchi. Inoltre è necessario usare delle strutture per rappresentare adeguatamente le regole e i suoi campi. 
 
@@ -311,3 +318,16 @@ Ho usato la funzione di libreria **SortStableFunc**. Questa funzione usa una var
 
 - **Complessità temporale**: l'ordinamento è basato su dei confronti, nel caso peggiore non si scende al di sotto di **O(n log n)**
 - **Complessità spaziale**: è in loco, non alloca spazio aggiuntivo, quindi la complessità è costante **O(1)**.
+
+## Esempio di esecuzione
+Abbiamo la seguente griglia: 
+
+![image](img/IMG_20240610_230837~2.jpg)
+
+
+
+Passando il file "input.in", la griglia diventerà cosi:
+
+![image](img/IMG_20240610_230844~2.jpg)
+
+Le piastrelle cerchiate in rosso sono quelle che vengono modificate dai comandi propaga e propagaBlocco, notiamo che la piastrella (9, 5), viene spenta correttamente.
