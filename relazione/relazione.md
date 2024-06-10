@@ -281,7 +281,7 @@ func propagaBlocco(p piano, x, y int) {
 }
 ```
 Inanzitutto individuiamo le piastrelle che fanno parte del blocco usando la funzione **blocco**, che restituisce le piastrelle in una slice. Anche qui viene usata una mappa **colori[piastrella]regola_** che associa ad una piastrella la regola da utilizzare. Abbiamo poi **var modifiche []map[piastrella]regola_**, cioè una **slice di modifiche** da applicare a ogni piastrella. 
-La funzione itera sulla slice che contiene le piastrelle del blocco, e vi applica la funzione **propagaGenerico**, che vi restituisce i la regola da applicare ad una piastrella (se è presente una regola applicabile), e la aggiunge alla slice delle modifiche. 
+La funzione itera sulla slice che contiene le piastrelle del blocco, e vi applica la funzione **propagaGenerico**, che vi restituisce la regola da applicare ad una piastrella (se è presente una regola applicabile), e la aggiunge alla slice delle modifiche. 
 Infine si itera sulle slice delle modifiche e si chiama la funzione **coloraPiastrelle**.
 - **Complessità temporale**: la complessità temporale è pari a **O(P + R)** dove **P = numero piastrelle nel blocco**, **R = numero regole**
 - **Complessità spaziale**: abbiamo una slice che contiene le piastrelle nel blocco, quindi con una complessità **O(P)**, una mappa con i colori risultanti che ha complessità **O(n)** dove **n = numero colori**, quindi la complessità è **O(P + n)**.
