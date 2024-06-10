@@ -191,7 +191,7 @@ func cercaAdiacenti(p piano, piast piastrella) []piastrella {
 ```
 cercaAdiacenti trova le piastrelle circonvicine rispetto a una piastrella in input generando tutte le possibili combinazioni di piastrelle intorno a quella in input, infine restituisce una **slice** contenenti le piastrelle circonvicine. La funzione ha **complessità temporale**: complessità costante **O(1)**
 
-La BFS inoltre fa uso di una **coda**, notiamo l'utilizzo del campo **tail** che è utile nel metodo **Enqueue()**, dato che permette di non dover scorrere tutta la coda per aggiungere un elemento in coda, ma l'aggiunta dell'ultimo elemento viene effettuata in tempo costante. 
+La BFS inoltre fa uso di una **coda**, notiamo l'utilizzo del campo **tail** che è utile nel metodo **Enqueue()**, dato che permette di non dover scorrere tutta la coda per aggiungere un elemento in ultima posizione, ma questa aggiunta viene effettuata in tempo costante. 
 ```Go
 type queueNode struct {
 	value piastrella
@@ -285,3 +285,16 @@ La funzione itera sulla slice che contiene le piastrelle del blocco, e vi applic
 Infine si itera sulle slice delle modifiche e si chiama la funzione **coloraPiastrelle**.
 - **Complessità temporale**: la complessità temporale è pari a **O(P + R)** dove **P = numero piastrelle nel blocco**, **R = numero regole**
 - **Complessità spaziale**: abbiamo una slice che contiene le piastrelle nel blocco, quindi con una complessità **O(P)**, una mappa con i colori risultanti che ha complessità **O(n)** dove **n = numero colori**, quindi la complessità è **O(P + n)**.
+
+### Ordina
+La funzione ordina, ordina l’elenco delle regole di propagazione in base al consumo delle regole stesse in ordine non decrescente, facendo attenzione a mantenere l'ordine relativo delle regole, quindi la funzione che ordina deve essere **stabile**.
+```Go
+func ordina(p piano) {
+	slices.SortStableFunc(*p.regole, func(a, b regola_) int {
+		return a.consumo - b.consumo
+	})
+}
+```
+Ho usato la funzione di libreria **SortStableFunc**. Questa funzione usa una variante di **merge sort in loco**. 
+- **Complessità temporale**: l'ordinamento è basato su dei confronti, nel caso peggiore non si scende al di sotto di **O(n log n)**
+- **Complessità spaziale**: è in loco, non alloca spazio aggiuntivo, quindi la complessità è costante **O(1)**.
