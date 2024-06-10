@@ -1,5 +1,6 @@
-De Luca Daniele, 01576A
-# *Relazione progetto "Piastrelle Digitali"*
+De Luca Daniele, 01576A 
+
+# Relazione progetto "Piastrelle Digitali"
 
 ## Modellazione e implementazione
 Analizzando la traccia emergono alcune considerazioni importanti: è necessaria una struttura dati adeguata e efficiente per rappresentare il piano con le piastrelle e i relativi blocchi. Inoltre è necessario usare delle strutture per rappresentare adeguatamente le regole e i suoi campi. 
