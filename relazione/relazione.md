@@ -33,7 +33,9 @@ type regola_ struct {
 }
 ```
 
-Il tipo regola_ ha tre campi:
+Il tipo regola_ ha tre campi: 
+<br>
+
 - **addendi**, rappresentati da una slice di colori, contengono i colori e le intensità associate di una regola
 - **risultato**, cioè il colore finale se la regola di propagazione può essere utilizzata, rappresentato tramite una stringa
 - **consumo**, un campo intero che viene incrementato all'utilizzo della una regola di propagazione
@@ -47,7 +49,8 @@ func colora(p piano, x int, y int, alpha string, i int) {
 }
 ```
 La funziona colora ha come parametri il **piano**, le **coordinate** di una piastrella, il **colore** sotto forma di stringa, e l'**intensità**. La piastrella in input viene colorata grazie all'utilizzo della **mappa** che contiene le piastrelle nel piano, a questa vengono passate le coordinate, il colore e l'intensità desiderata.  
-- **Complessità temporale**: l'accesso a una mappa ha costo **O(1)**
+
+- **Complessità temporale**: l'accesso a una mappa ha costo **O(1)** 
 - **Complessità spaziale**: non viene allocato alcuno spazio, quindi abbiamo costo costante di **O(1)**
 
 ### Spegni
@@ -57,6 +60,7 @@ func spegni(p piano, x int, y int) {
 }
 ```
 Spegni ha come parametri il **piano** e le **coordinate** di una piastrella. Questa funzione permette di spegnere la piastrella passata in input tramite le coordinate, nel piano. Ciò viene fatto sotto forma di cancellazione della chiave nella mappa che contiene tutte le piastrelle. 
+
 - **Complessità temporale**: l'operazione di **delete** ha tempo costante **O(1)**
 - **Complessità spaziale**: non viene allocato alcuno spazio, quindi abbiamo costo costante di **O(1)**
 
@@ -85,6 +89,7 @@ $\beta$ k1 $\alpha 1$ k2 $\alpha 2$ · · · kn $\alpha n$
 
 Dove $\beta$ è il **colore risultato** della regola, ki $\alpha i$ sono gli **addendi** della regola. Viene effettuata una **Split** sulla stringa, i suoi dati vengono salvati su una slice di stringhe, ignorando gli spazi. 
 Viene effettuato **parsing** della slice, e grazie a questa operazione viene creata e aggiunta la regola nella slice di regole nel **piano**.
+
 - **Complessità temporale**: la **Split** ha complessità **O(n)**, dove **n = numero caratteri stringa**. Abbiamo un **ciclo for** che itera sulla **slice**, che ha **k elementi**. Inoltre le restanti operazioni (assegnamenti di variabili e confronti hanno complessità costante **O(1)**). Nè risulta una complessità di **O(n) + O(k) = O(n)**, poichè **k <= n**.
 - **Complessità spaziale**: Abbiamo due **variabili** che occupano spazio costante **O(1)**. La slice **addendi** cresce nell'ordine di **O(n) dove n è al max 8** dato che una regola non ha mai più di 8 addendi. L' aggiunta della regola occupa spazio costante **O(1)**. La **Split** ha complessità pari a **O(n)**. Quindi la complessità spaziale è nell'ordine di **O(n)**.
 
@@ -100,6 +105,7 @@ func stato(p piano, x int, y int) (string, int) {
 }
 ```
 Stato prende come parametro il **piano** e le **coordinate** di una piastrella, **restituisce** e **stampa** il **colore** e l'**intensità** della piastrella in input se questa è accesa nel piano, altrimenti non verrà stampato nulla. Stato funziona correttamente grazie a un controllo di esistenza di una chiave in una mappa, in questo caso, passo alla mappa che contiene le piastrelle, le coordinate date come parametro in input e appunto nè controllo l'esistenza.
+
 - **Complessità temporale**: assumiamo che i confronti, gli assegnamenti di variabili e la restituzione di valori abbiano tempo costante, quindi la complessità è **O(1)**
 - **Complessità spaziale**: lo spazio utilizzato in questa funzione è nell'ordine di **O(1)**
 
@@ -130,6 +136,7 @@ rm
 )
 ```
 La funzione prima controlla se sono presenti delle regole da stampare, in caso affermativo, viene iterata la slice di regole, e per ognuna stampa i diversi addendi, ciò viene fatto con due **cicli for** annidati. 
+
 - **Complessità temporale**: il primo ciclo ha complessità **O(n)** dove **n = numero regole nel piano**, il for interno effettua sempre al massimo **8 iterazioni** (perchè una regola ha al max 8 addendi), quindi ha complessità **O(k)** dove **k = 8**. 
 Abbiamo quindi **O(n) * O(k) = O(n * k)**. 
 - **Complessità spaziale**: assumiamo che i confronti, gli assegnamenti e le operazioni di stampa abbiano complessità costante di **O(1)**
@@ -211,6 +218,7 @@ type queue struct {
 ### Blocco omogeneo
 Blocco omogeneo ha un comportamento simile a **blocco**, solo che in questo caso calcola e restituisce l'**intensità** di un **blocco omogeneo di appartenenza**.
 L' implementazione della funzione è pressochè identica a blocco, con una differenza, è presente un **if** che controlla se il **colore della piastrella iniziale** è uguale al **colore della piastrella circonvicina**, per verificare l'**omogeneità del colore**. Le prestazioni e la complessità non variano rispetto a blocco, quindi: 
+
 - **Complessità temporale**: **O(n)**
 - **Complessità spaziale**: **O(n)**
 
@@ -258,6 +266,7 @@ func propagaGenerico(p piano, x, y int) map[piastrella]regola_ {
 ```
 Per questa funzione usiamo due mappe, **quantitaColori[string]int** che conta i colori delle piastrelle adiacenti a quella in input, cosi da verificare se una regola di propagazione è applicabile o meno, e **coloriRisultati[piastrella]regola_** che verrà restituita come risultato della funzione, questa mappa memorizza che regola di propagazaione deve essere applicata a una certa piastrella. Per "riempire" la mappa **quantitaColori** viene usata la funzione cercaAdiacenti. 
 La funzione ha poi **due cicli for** annidati, il ciclo esterno itera sull'elenco delle regole, e quello interno itera sugli addendi delle regole per verificare se la regola è applicabile o meno (per verificare se una regola è applicabile ci aiutiamo con l'utilizzo di una **flag**). Poi se abbiamo trovato una regola, viene aumentato il consumo della regola, e questa viene salvata e restituita sotto forma di mappa. Infine viene chiamata la funzione **coloraPiastrelle** che applica la funzione **colora** e quindi colora la piastrella. 
+
 - **Complessità temporale**: il ciclo per popolare la mappa **quantitaColori** ha una complessità **O(1)**, dato le operazioni all'interno del ciclo hanno costo costante e che abbiamo un massimo di 8 piastrelle adiacenti. Per i **due cicli for annidati** invece, quello esterno itera su tutte le **regole**, e quello interno itera sugli **addendi** di essa, quindi supponendo che le altre operazioni hanno tempo costante, sappiamo che gli addendi per una regola sono al massimo 8, quindi abbiamo complessità **O(1)**, il ciclo esterno ha complessità **O(n)** dove **n = numero regole**, quindi la complessità totale è **O(n)**. La funzione **coloraPiastrelle** in questo caso itererà un massimo di una volta, su un'unica piastrella, quindi ha complessità **O(1)**. 
 La **complessità temporale** di propaga è **O(n) + 0(1) = O(n)**.
 - **complessità spaziale**: la mappa **quantitaColori** conterrà al massimo i colori di 8 piastrelle, **coloriRisultati** avrà invece al massimo 1 regola di colorazione per una piastrella, entrambe hanno quindi complessità **O(1)**
@@ -285,8 +294,9 @@ func propagaBlocco(p piano, x, y int) {
 Inanzitutto individuiamo le piastrelle che fanno parte del blocco usando la funzione **blocco**, che restituisce le piastrelle in una slice. Anche qui viene usata una mappa **colori[piastrella]regola_** che associa ad una piastrella la regola da utilizzare. Abbiamo poi **var modifiche []map[piastrella]regola_**, cioè una **slice di modifiche** da applicare a ogni piastrella. 
 La funzione itera sulla slice che contiene le piastrelle del blocco, e vi applica la funzione **propagaGenerico**, che vi restituisce la regola da applicare ad una piastrella (se è presente una regola applicabile), e la aggiunge alla slice delle modifiche. 
 Infine si itera sulle slice delle modifiche e si chiama la funzione **coloraPiastrelle**.
-- **Complessità temporale**: la complessità temporale è pari a **O(P + R)** dove **P = numero piastrelle nel blocco**, **R = numero regole**
-- **Complessità spaziale**: abbiamo una slice che contiene le piastrelle nel blocco, quindi con una complessità **O(P)**, una mappa con i colori risultanti che ha complessità **O(n)** dove **n = numero colori**, quindi la complessità è **O(P + n)**.
+
+- **Complessità temporale**: la complessità temporale è pari a **O(P * R)** dove **P = numero piastrelle nel blocco**, **R = numero regole**
+- **Complessità spaziale**: abbiamo una slice che contiene le piastrelle nel blocco, quindi con una complessità **O(P)**, una mappa con i colori risultanti che ha complessità **O(n)** dove **n = numero colori**, quindi la complessità è **O(P * n)**.
 
 ### Ordina
 La funzione ordina, ordina l’elenco delle regole di propagazione in base al consumo delle regole stesse in ordine non decrescente, facendo attenzione a mantenere l'ordine relativo delle regole, quindi la funzione che ordina deve essere **stabile**.
@@ -298,5 +308,6 @@ func ordina(p piano) {
 }
 ```
 Ho usato la funzione di libreria **SortStableFunc**. Questa funzione usa una variante di **merge sort in loco**. 
+
 - **Complessità temporale**: l'ordinamento è basato su dei confronti, nel caso peggiore non si scende al di sotto di **O(n log n)**
 - **Complessità spaziale**: è in loco, non alloca spazio aggiuntivo, quindi la complessità è costante **O(1)**.
