@@ -1,4 +1,4 @@
-De Luca Daniele 01576A
+De Luca Daniele, 01576A
 # *Relazione progetto "Piastrelle Digitali"*
 
 ## Modellazione e implementazione

@@ -83,8 +83,6 @@ func esegui(p piano, s string) {
 		ordina(p)
 	case "q":
 		os.Exit(0)
-	default:
-		return
 	}
 }
 
